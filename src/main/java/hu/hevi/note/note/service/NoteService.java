@@ -8,10 +8,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.OptionalInt;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -34,15 +31,16 @@ public class NoteService {
         return cachedNotes;
     }
 
-    public String getNotesAsString() {
-        return noteUtils.asString(cachedNotes);
-    }
-
     public void addNote(String content) throws IOException {
         OptionalInt optionalMax = cachedNotes.stream().mapToInt(n -> n.getId()).max();
-        // TODO handle if no optionalMax present
-        Note note = new Note(optionalMax.getAsInt() + 1, content);
+        int maxId = optionalMax.equals(OptionalInt.empty()) ? 0 : optionalMax.getAsInt();
+
+        Note note = new Note(maxId + 1, content, Optional.empty());
         cachedNotes.add(note);
+        fileHandler.write(cachedNotes);
+    }
+
+    public void update() throws IOException {
         fileHandler.write(cachedNotes);
     }
 
@@ -52,7 +50,15 @@ public class NoteService {
         return getNotesAsString(notes);
     }
 
+    public Optional<Note> findById(final int id) {
+        return cachedNotes.stream().filter(n -> n.getId().equals(id)).findFirst();
+    }
+
     private String getNotesAsString(List<Note> notes) {
         return noteUtils.asString(notes);
+    }
+
+    public String getNotesAsString() {
+        return noteUtils.asString(cachedNotes);
     }
 }
