@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,12 +37,16 @@ public class NoteUtils {
                 DateTimeFormatter formatter = fileFormatUtils.getDateTimeFormatter();
                 LocalDateTime date = LocalDateTime.parse(line.substring(line.indexOf(" ") + 1));
                 noteBuilder.date(date);
+            } else if (line.startsWith("[")) {
+                noteBuilders.getLast().tags(new ArrayList<>());
             } else if (StringUtils.isNotBlank(line)) {
                 noteBuilders.getLast().content(line);
             } else {
-                Note note = noteBuilders.getLast().build();
-                notes.add(note);
-                noteBuilders.removeLast();
+                if (noteBuilders.size() > 0) {
+                    Note note = noteBuilders.getLast().build();
+                    notes.add(note);
+                    noteBuilders.removeLast();
+                }
             }
         });
         return notes;
