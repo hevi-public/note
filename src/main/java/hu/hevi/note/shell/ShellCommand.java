@@ -15,7 +15,7 @@ public class ShellCommand {
     private ShellState state;
 
     @ShellMethod(value = "Change mode", prefix = "", key = "")
-    public String mode() {ª
+    public String mode() {
         state.setState(state.getState().next());
         return null;
     }

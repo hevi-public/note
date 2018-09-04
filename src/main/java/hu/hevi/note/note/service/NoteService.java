@@ -31,13 +31,15 @@ public class NoteService {
         return cachedNotes;
     }
 
-    public void addNote(String content) throws IOException {
+    public int addNote(String content) throws IOException {
         OptionalInt optionalMax = cachedNotes.stream().mapToInt(n -> n.getId()).max();
         int maxId = optionalMax.equals(OptionalInt.empty()) ? 0 : optionalMax.getAsInt();
 
-        Note note = new Note(maxId + 1, content, Optional.empty());
+        int id = maxId + 1;
+        Note note = new Note(id, content, Optional.empty());
         cachedNotes.add(note);
         fileHandler.write(cachedNotes);
+        return id;
     }
 
     public void update() throws IOException {

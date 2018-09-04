@@ -8,4 +8,5 @@ import org.springframework.stereotype.Component;
 public class ShellState {
 
     private State state = State.COMMAND;
+    private int lastAddedNoteId = 0;
 }
