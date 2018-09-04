@@ -21,7 +21,7 @@ public class FileHandler {
     private NoteFormatter noteFormatter;
 
     // TODO FIX baked in path
-    private static final String FILENAME = "~/.note/note.nt";
+    private static final String FILENAME = "/Users/hevi/.note/note.nt";
 
     public List<String> readLines() throws IOException {
         List<String> lines = new LinkedList<>();
