@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.jline.PromptProvider;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class StatePromptProvider implements PromptProvider {
@@ -23,18 +25,26 @@ public class StatePromptProvider implements PromptProvider {
                     AttributedStyle.DEFAULT.foreground(AttributedStyle.CYAN)));
         }
 
+        AttributedStyle foreground = AttributedStyle.DEFAULT.foreground(AttributedStyle.YELLOW);
         switch (shellState.getState()) {
             case FIND:
-                prompt.add(new AttributedString(shellState.getState().name().toUpperCase(),
-                        AttributedStyle.DEFAULT.foreground(AttributedStyle.GREEN)));
+                foreground = AttributedStyle.DEFAULT.foreground(AttributedStyle.GREEN);
+                prompt.add(new AttributedString(shellState.getState().name().toUpperCase(), foreground));
                 break;
             case ADD:
-                prompt.add(new AttributedString(shellState.getState().name().toUpperCase(),
-                        AttributedStyle.DEFAULT.foreground(AttributedStyle.BRIGHT)));
+                foreground = AttributedStyle.DEFAULT.foreground(AttributedStyle.BRIGHT);
+                prompt.add(new AttributedString(shellState.getState().name().toUpperCase(), foreground));
+                break;
+            case TAG_CURRENT_NOTE:
+                foreground = AttributedStyle.DEFAULT.foreground(AttributedStyle.BLUE);
+                String[] split = shellState.getState().name().split("_");
+                List<String> splitName = Arrays.asList(split);
+                String readableName = splitName.stream().collect(Collectors.joining(" "));
+                prompt.add(new AttributedString(readableName.toUpperCase(), foreground));
                 break;
             case COMMAND:
-                prompt.add(new AttributedString(shellState.getState().name().toUpperCase(),
-                        AttributedStyle.DEFAULT.foreground(AttributedStyle.MAGENTA)));
+                foreground = AttributedStyle.DEFAULT.foreground(AttributedStyle.YELLOW);
+                prompt.add(new AttributedString(shellState.getState().name().toUpperCase(), foreground));
                 break;
         }
 

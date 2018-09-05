@@ -37,6 +37,8 @@ public class StateMethodTargetResolver implements MethodTargetResolver {
                 return MethodTarget.of("add", noteCommand, new Command.Help("add command"), () -> Availability.available(), argumentResolver);
             case FIND:
                 return MethodTarget.of("find", noteCommand, new Command.Help("find command"), () -> Availability.available(), argumentResolver);
+            case TAG_CURRENT_NOTE:
+                return MethodTarget.of("tagLastNote", noteCommand, new Command.Help("Tag last note"), () -> Availability.available(), argumentResolver);
         }
         return null;
     }

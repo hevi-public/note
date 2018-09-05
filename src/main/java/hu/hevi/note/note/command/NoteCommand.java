@@ -26,14 +26,29 @@ public class NoteCommand {
     public String add(@ShellOption String content) throws IOException {
         int id = noteService.addNote(content);
         shellState.setLastAddedNoteId(id);
-        return ">> " + "#" + id + " -> " + content;
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("-----------------------------------------");
+        sb.append("\n");
+        sb.append(">> " + "#");
+        sb.append(id);
+        sb.append(" -> ");
+        sb.append(content);
+        sb.append("\n");
+        sb.append("\n");
+        return sb.toString();
     }
 
     @ShellMethod("Get notes")
     public String list() throws IOException {
         StringBuilder sb = new StringBuilder();
+        sb.append("-----------------------------------------");
+        sb.append("\n");
         sb.append(">> list");
+        sb.append("\n");
         sb.append(noteService.getNotesAsString());
+        sb.append("\n");
+        sb.append("\n");
         return sb.toString();
     }
 
@@ -42,7 +57,10 @@ public class NoteCommand {
         String found = noteService.find(searchText);
 
         StringBuilder sb = new StringBuilder();
+        sb.append("-----------------------------------------");
+        sb.append("\n");
         sb.append("?? " + searchText);
+        sb.append("\n");
         sb.append("\n");
         sb.append(found);
         return sb.toString();
@@ -55,9 +73,31 @@ public class NoteCommand {
             Note note = noteOptional.get();
             note.tags().add(tag);
             noteService.update();
-            return ">> " + noteId + " -> " + tag;
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("-----------------------------------------");
+            sb.append("\n");
+            sb.append(String.format(">> %i <-> %s", noteId, tag));
+            sb.append("\n");
+            sb.append("\n");
+            return sb.toString();
         } else {
-            return "\"!! \" + noteId + \" -> \" + tag. Note not found.";
+            StringBuilder sb = new StringBuilder();
+            sb.append("-----------------------------------------");
+            sb.append("\n");
+            sb.append(String.format("!! %i <-> %s. Note not found.", noteId, tag));
+            sb.append("\n");
+            sb.append("\n");
+            return sb.toString();
+        }
+    }
+
+    @ShellMethod(value = "Tag last note", freetext = true)
+    public String tagLastNote(@ShellOption String tag) throws IOException {
+        if (shellState.getLastAddedNoteId() == 0) {
+            return "!! There is no previous note in this session to be tagged. Try adding one";
+        } else {
+            return this.tag(shellState.getLastAddedNoteId(), tag);
         }
     }
 }
