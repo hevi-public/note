@@ -4,6 +4,7 @@ import hu.hevi.note.note.domain.Note;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,8 +21,13 @@ public class FileHandler {
     @Autowired
     private NoteFormatter noteFormatter;
 
-    // TODO FIX baked in path
-    private static final String FILENAME = "/Users/hevi/.note/note.nt";
+    private final String FILENAME = getFilename();
+
+    private String getFilename() {
+        String home = System.getProperty("user.home") + File.separator;
+        String noteFile = ".note" + File.separator + "note.nt";
+        return home + noteFile;
+    }
 
     public List<String> readLines() throws IOException {
         List<String> lines = new LinkedList<>();
