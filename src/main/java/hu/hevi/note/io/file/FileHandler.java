@@ -4,6 +4,7 @@ import hu.hevi.note.note.domain.Note;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -22,6 +23,30 @@ public class FileHandler {
     private NoteFormatter noteFormatter;
 
     private final String FILENAME = getFilename();
+
+    @PostConstruct
+    private void init() throws IOException {
+        String homeDir = System.getProperty("user.home") + File.separator;
+
+        String directoryName = ".note" + File.separator;
+
+        File directory = new File(homeDir + directoryName);
+        if (!directory.exists()) {
+            boolean mkdirResult = directory.mkdir();
+            if (!mkdirResult) {
+                throw new IOException("Couldn't create directory in: " + directory);
+            }
+        }
+
+        String fileName = "note.txt" + File.separator;
+        File file = new File(homeDir + directoryName + fileName);
+        if (!file.exists()) {
+            boolean newFileResult = file.createNewFile();
+            if (!newFileResult) {
+                throw new IOException("Couldn't create file in: " + directory);
+            }
+        }
+    }
 
     private String getFilename() {
         String home = System.getProperty("user.home") + File.separator;
