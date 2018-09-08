@@ -27,43 +27,19 @@ public class NoteCommand {
         int id = noteService.addNote(content);
         shellState.setLastAddedNoteId(id);
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("-----------------------------------------");
-        sb.append("\n");
-        sb.append(">> " + "#");
-        sb.append(id);
-        sb.append(" -> ");
-        sb.append(content);
-        sb.append("\n");
-        sb.append("\n");
-        return sb.toString();
+        return getAddDisplayText(id, content);
     }
 
     @ShellMethod("Get notes")
     public String list() throws IOException {
-        StringBuilder sb = new StringBuilder();
-        sb.append("-----------------------------------------");
-        sb.append("\n");
-        sb.append(">> list");
-        sb.append("\n");
-        sb.append(noteService.getNotesAsString());
-        sb.append("\n");
-        sb.append("\n");
-        return sb.toString();
+        return getListDisplayText(noteService.getNotesAsString());
     }
 
     @ShellMethod(value = "Find notes", freetext = true)
     public String find(@ShellOption String searchText) throws IOException {
         String found = noteService.find(searchText);
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("-----------------------------------------");
-        sb.append("\n");
-        sb.append("?? " + searchText);
-        sb.append("\n");
-        sb.append("\n");
-        sb.append(found);
-        return sb.toString();
+        return getFindDisplayText(searchText, found);
     }
 
     @ShellMethod(value = "Tag note")
@@ -74,21 +50,9 @@ public class NoteCommand {
             note.tags().add(tag);
             noteService.update();
 
-            StringBuilder sb = new StringBuilder();
-            sb.append("-----------------------------------------");
-            sb.append("\n");
-            sb.append(String.format(">> %i <-> %s", noteId, tag));
-            sb.append("\n");
-            sb.append("\n");
-            return sb.toString();
+            return getTagSuccessDisplayText(noteId, tag);
         } else {
-            StringBuilder sb = new StringBuilder();
-            sb.append("-----------------------------------------");
-            sb.append("\n");
-            sb.append(String.format("!! %i <-> %s. Note not found.", noteId, tag));
-            sb.append("\n");
-            sb.append("\n");
-            return sb.toString();
+            return getTagErrorDisplayText(noteId, tag);
         }
     }
 
@@ -99,5 +63,62 @@ public class NoteCommand {
         } else {
             return this.tag(shellState.getLastAddedNoteId(), tag);
         }
+    }
+
+    private String getAddDisplayText(int id, String content) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("-----------------------------------------");
+        sb.append("\n");
+        sb.append(">> " + "#");
+        sb.append(id);
+        sb.append(" -> ");
+        sb.append(content);
+        sb.append("\n");
+        sb.append("\n");
+        sb.toString();
+        return sb.toString();
+    }
+
+    private String getListDisplayText(String notes) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("-----------------------------------------");
+        sb.append("\n");
+        sb.append(">> list");
+        sb.append("\n");
+        sb.append(notes);
+        sb.append("\n");
+        sb.append("\n");
+        return sb.toString();
+    }
+
+    private String getFindDisplayText(@ShellOption String searchText, String found) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("-----------------------------------------");
+        sb.append("\n");
+        sb.append("?? " + searchText);
+        sb.append("\n");
+        sb.append("\n");
+        sb.append(found);
+        return sb.toString();
+    }
+
+    private String getTagSuccessDisplayText(@ShellOption int noteId, @ShellOption String tag) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("-----------------------------------------");
+        sb.append("\n");
+        sb.append(String.format(">> %d <-> %s", noteId, tag));
+        sb.append("\n");
+        sb.append("\n");
+        return sb.toString();
+    }
+
+    private String getTagErrorDisplayText(@ShellOption int noteId, @ShellOption String tag) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("-----------------------------------------");
+        sb.append("\n");
+        sb.append(String.format("!! %d <-> %s. Note not found.", noteId, tag));
+        sb.append("\n");
+        sb.append("\n");
+        return sb.toString();
     }
 }
