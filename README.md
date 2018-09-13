@@ -2,7 +2,7 @@
 
 ## Overview
 
-## Build:
+## Build
 ```- git clone https://github.com/hevi-public/spring-shell.git
 - git checkout enter_as_command
 - mvn clean install
