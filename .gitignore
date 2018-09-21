@@ -2,3 +2,7 @@
 note.iml
 spring-shell.log
 target/
+build.sh
+run.sh
+run_debug.sh
+.gitignore
