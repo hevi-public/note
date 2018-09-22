@@ -46,7 +46,7 @@ function init(graph) {
     network = new vis.Network(container, data, options);
 }
 
-function updateGraph() {
+var updateGraph = function() {
     generateGraph();
 }
 
@@ -60,6 +60,10 @@ function keyPressHandler(event) {
 
     if (inputValue === "") {
         // handle blank enter case
+        sendRequest('GET', '/state/next', "", isJson = false, function(xhr) {
+            input.placeholder = xhr.responseText;
+        });
+
         return false;
     }
 
@@ -69,24 +73,34 @@ function keyPressHandler(event) {
     };
 
     // add node
+    sendRequest('POST', '/node', content, isJson = true, function(xhr) {
+        updateGraph();
+        input.value = "";
+    });
+
+
+    return false;
+}
+
+function sendRequest(method, endpoing, content, isJson, callback) {
     var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/node');
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.send(JSON.stringify(content));
+    xhr.open(method, endpoing);
+    if (isJson) {
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(JSON.stringify(content));
+    } else {
+        xhr.send(null);
+    }
 
     xhr.onreadystatechange = function () {
       var DONE = 4;
       var OK = 200;
       if (xhr.readyState === DONE) {
         if (xhr.status === OK) {
-          updateGraph()
-          input.value = "";
+          callback(xhr);
         } else {
           console.log('Error: ' + xhr.status);
         }
       }
     };
-
-
-    return false;
 }
