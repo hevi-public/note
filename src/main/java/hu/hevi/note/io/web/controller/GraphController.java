@@ -20,13 +20,13 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/graph")
-public class NodeController {
+public class GraphController {
 
     @Autowired
     private NodeService nodeService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public GraphResponse getGraphData(@RequestParam(name="name", required=false, defaultValue="World") String name, Model model) throws IOException {
+    public GraphResponse getGraphData() throws IOException {
 
         List<Note> notes = nodeService.getNotes(QueryType.FORCE_UPDATE);
         List<NodeResponse> nodes = notes.stream()
