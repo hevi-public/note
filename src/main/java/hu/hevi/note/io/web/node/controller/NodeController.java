@@ -1,7 +1,7 @@
-package hu.hevi.note.io.web.controller;
+package hu.hevi.note.io.web.node.controller;
 
-import hu.hevi.note.io.web.request.AddRequest;
-import hu.hevi.note.io.web.response.NodeResponse;
+import hu.hevi.note.io.web.node.request.AddRequest;
+import hu.hevi.note.io.web.node.response.NodeResponse;
 import hu.hevi.note.note.domain.Note;
 import hu.hevi.note.note.service.NodeService;
 import hu.hevi.note.note.service.type.QueryType;

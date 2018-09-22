@@ -1,4 +1,4 @@
-package hu.hevi.note.io.web.response;
+package hu.hevi.note.io.web.node.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;

@@ -1,8 +1,8 @@
-package hu.hevi.note.io.web.controller;
+package hu.hevi.note.io.web.graph.controller;
 
-import hu.hevi.note.io.web.response.EdgeResponse;
-import hu.hevi.note.io.web.response.GraphResponse;
-import hu.hevi.note.io.web.response.NodeResponse;
+import hu.hevi.note.io.web.graph.response.EdgeResponse;
+import hu.hevi.note.io.web.graph.response.GraphResponse;
+import hu.hevi.note.io.web.node.response.NodeResponse;
 import hu.hevi.note.note.domain.Note;
 import hu.hevi.note.note.service.NodeService;
 import hu.hevi.note.note.service.type.QueryType;

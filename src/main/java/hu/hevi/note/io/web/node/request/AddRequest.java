@@ -1,4 +1,4 @@
-package hu.hevi.note.io.web.request;
+package hu.hevi.note.io.web.node.request;
 
 import lombok.Data;
 
