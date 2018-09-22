@@ -55,16 +55,17 @@ function keyPressHandler(event) {
         return true;
     }
 
-    var input = document.getElementById("command-line").value;
+    var input = document.getElementById("command-line");
+    var inputValue = input.value;
 
-    if (input === "") {
+    if (inputValue === "") {
         // handle blank enter case
         return false;
     }
 
     var content = {
         peerId: network.getSelection().nodes[0],
-        content: input
+        content: inputValue
     };
 
     // add node
@@ -79,6 +80,7 @@ function keyPressHandler(event) {
       if (xhr.readyState === DONE) {
         if (xhr.status === OK) {
           updateGraph()
+          input.value = "";
         } else {
           console.log('Error: ' + xhr.status);
         }
