@@ -2,7 +2,7 @@ package hu.hevi.note.note.command;
 
 import hu.hevi.note.note.domain.Note;
 import hu.hevi.note.note.service.NodeService;
-import hu.hevi.note.shell.ShellState;
+import hu.hevi.note.common.shell.ShellState;
 import org.jline.terminal.Terminal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.standard.ShellComponent;

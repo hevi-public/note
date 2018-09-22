@@ -1,5 +1,6 @@
 package hu.hevi.note.shell;
 
+import hu.hevi.note.common.shell.ShellState;
 import org.jline.terminal.Terminal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.standard.ShellComponent;

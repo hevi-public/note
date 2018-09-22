@@ -1,6 +1,7 @@
-var xhr = new XMLHttpRequest();
+var network;
 
-function getNodes() {
+function generateGraph() {
+    var xhr = new XMLHttpRequest();
     xhr.open('GET', '/graph');
     xhr.send(null);
 
@@ -9,7 +10,7 @@ function getNodes() {
       var OK = 200;
       if (xhr.readyState === DONE) {
         if (xhr.status === OK) {
-          draw(JSON.parse(xhr.responseText));
+          init(JSON.parse(xhr.responseText));
         } else {
           console.log('Error: ' + xhr.status);
         }
@@ -17,7 +18,7 @@ function getNodes() {
     };
 }
 
-function draw(graph) {
+function init(graph) {
 
     var container = document.getElementById('mynetwork');
     var data = {
@@ -42,5 +43,48 @@ function draw(graph) {
             stabilization: {iterations: 150}
         }
     };
-    var network = new vis.Network(container, data, options);
+    network = new vis.Network(container, data, options);
+}
+
+function updateGraph() {
+    generateGraph();
+}
+
+function keyPressHandler(event) {
+    if(!(event instanceof KeyboardEvent) || event.key !== "Enter") {
+        return true;
+    }
+
+    var input = document.getElementById("command-line").value;
+
+    if (input === "") {
+        // handle blank enter case
+        return false;
+    }
+
+    var content = {
+        peerId: network.getSelection().nodes[0],
+        content: input
+    };
+
+    // add node
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/node');
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send(JSON.stringify(content));
+
+    xhr.onreadystatechange = function () {
+      var DONE = 4;
+      var OK = 200;
+      if (xhr.readyState === DONE) {
+        if (xhr.status === OK) {
+          updateGraph()
+        } else {
+          console.log('Error: ' + xhr.status);
+        }
+      }
+    };
+
+
+    return false;
 }

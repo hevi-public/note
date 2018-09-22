@@ -1,4 +1,4 @@
-package hu.hevi.note.shell;
+package hu.hevi.note.common.shell;
 
 // https://stackoverflow.com/questions/17006239/whats-the-best-way-to-implement-next-and-previous-on-an-enum-type
 public enum State {

@@ -44,9 +44,20 @@ public class NodeService {
         int maxId = optionalMax.equals(OptionalInt.empty()) ? 0 : optionalMax.getAsInt();
 
         int id = maxId + 1;
-        Note note = new Note(id, content, NodeType.NODE, Optional.empty());
+        Note note = new Note(id, content, NodeType.NODE, new ArrayList<>());
         cachedNotes.add(note);
-        fileHandler.write(cachedNotes);
+        update();
+        return id;
+    }
+
+    public int addNote(String content, List<Integer> connections) throws IOException {
+        OptionalInt optionalMax = cachedNotes.stream().mapToInt(n -> n.getId()).max();
+        int maxId = optionalMax.equals(OptionalInt.empty()) ? 0 : optionalMax.getAsInt();
+
+        int id = maxId + 1;
+        Note note = new Note(id, content, NodeType.NODE, connections);
+        cachedNotes.add(note);
+        update();
         return id;
     }
 

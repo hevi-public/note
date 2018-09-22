@@ -20,16 +20,12 @@ public class Note {
     private NodeType type;
     private List<Integer> tags;
 
-    public Note(int id, String content, NodeType type, Optional<List<Integer>> tags) {
+    public Note(int id, String content, NodeType type, List<Integer> tags) {
         this.id = id;
         this.date = LocalDateTime.now();
         this.content = content;
         this.type = type;
-        if (tags.isPresent()) {
-            this.tags = tags.get();
-        } else {
-            this.tags = new ArrayList<>();
-        }
+        this.tags = tags;
     }
 
     public boolean contains(String searchText) {

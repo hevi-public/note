@@ -1,5 +1,6 @@
 package hu.hevi.note.shell;
 
+import hu.hevi.note.common.shell.ShellState;
 import hu.hevi.note.note.command.NoteCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;

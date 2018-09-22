@@ -1,4 +1,4 @@
-package hu.hevi.note.shell;
+package hu.hevi.note.common.shell;
 
 import lombok.Data;
 import org.springframework.stereotype.Component;
