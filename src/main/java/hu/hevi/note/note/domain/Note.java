@@ -17,12 +17,14 @@ public class Note {
     private Integer id;
     private LocalDateTime date;
     private String content;
-    private List<String> tags;
+    private NodeType type;
+    private List<Integer> tags;
 
-    public Note(int id, String content, Optional<List<String>> tags) {
+    public Note(int id, String content, NodeType type, Optional<List<Integer>> tags) {
         this.id = id;
         this.date = LocalDateTime.now();
         this.content = content;
+        this.type = type;
         if (tags.isPresent()) {
             this.tags = tags.get();
         } else {
@@ -41,7 +43,7 @@ public class Note {
         return matched;
     }
 
-    public List<String> tags() {
+    public List<Integer> tags() {
         return tags != null ? tags : new ArrayList<>();
     }
 }

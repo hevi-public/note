@@ -1,6 +1,8 @@
 package hu.hevi.note.note.service;
 
 import hu.hevi.note.io.file.FileHandler;
+import hu.hevi.note.note.domain.NodeType;
+import hu.hevi.note.note.service.type.QueryType;
 import hu.hevi.note.note.util.NoteUtils;
 import hu.hevi.note.note.domain.Note;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +14,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
-public class NoteService {
+public class NodeService {
 
     @Autowired
     private FileHandler fileHandler;
@@ -23,11 +25,17 @@ public class NoteService {
 
     @PostConstruct
     private void setUp() throws IOException {
-        List<String> lines = fileHandler.readLines();
-        cachedNotes = noteUtils.convertToNotes(lines);
+        cachedNotes = readNodesFromFile();
     }
 
-    public List<Note> getNotes() {
+    public List<Note> getNotes(QueryType queryType) throws IOException {
+        switch (queryType) {
+            case CACHED:
+                break;
+            case FORCE_UPDATE:
+                cachedNotes = readNodesFromFile();
+                return cachedNotes;
+        }
         return cachedNotes;
     }
 
@@ -36,7 +44,7 @@ public class NoteService {
         int maxId = optionalMax.equals(OptionalInt.empty()) ? 0 : optionalMax.getAsInt();
 
         int id = maxId + 1;
-        Note note = new Note(id, content, Optional.empty());
+        Note note = new Note(id, content, NodeType.NODE, Optional.empty());
         cachedNotes.add(note);
         fileHandler.write(cachedNotes);
         return id;
@@ -62,5 +70,11 @@ public class NoteService {
 
     public String getNotesAsString() {
         return noteUtils.asString(cachedNotes);
+    }
+
+
+    private List<Note> readNodesFromFile() throws IOException {
+        List<String> lines = fileHandler.readLines();
+        return noteUtils.convertToNotes(lines);
     }
 }

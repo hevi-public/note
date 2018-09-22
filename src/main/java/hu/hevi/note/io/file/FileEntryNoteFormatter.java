@@ -22,6 +22,8 @@ public class FileEntryNoteFormatter implements NoteFormatter {
         sb.append(note.getId());
         sb.append(" ");
         sb.append(formatDateTime);
+        sb.append(" | ");
+        sb.append(note.getType().name());
         sb.append("\n");
         sb.append(note.getTags().toString());
         sb.append("\n");

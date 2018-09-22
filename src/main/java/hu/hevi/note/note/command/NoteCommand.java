@@ -1,7 +1,7 @@
 package hu.hevi.note.note.command;
 
 import hu.hevi.note.note.domain.Note;
-import hu.hevi.note.note.service.NoteService;
+import hu.hevi.note.note.service.NodeService;
 import hu.hevi.note.shell.ShellState;
 import org.jline.terminal.Terminal;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +18,13 @@ public class NoteCommand {
     @Autowired
     private ShellState shellState;
     @Autowired
-    private NoteService noteService;
+    private NodeService nodeService;
     @Autowired
     private Terminal terminal;
 
     @ShellMethod(value = "add", freetext = true)
     public String add(@ShellOption String content) throws IOException {
-        int id = noteService.addNote(content);
+        int id = nodeService.addNote(content);
         shellState.setLastAddedNoteId(id);
 
         return getAddDisplayText(id, content);
@@ -32,23 +32,23 @@ public class NoteCommand {
 
     @ShellMethod("Get notes")
     public String list() throws IOException {
-        return getListDisplayText(noteService.getNotesAsString());
+        return getListDisplayText(nodeService.getNotesAsString());
     }
 
     @ShellMethod(value = "Find notes", freetext = true)
     public String find(@ShellOption String searchText) throws IOException {
-        String found = noteService.find(searchText);
+        String found = nodeService.find(searchText);
 
         return getFindDisplayText(searchText, found);
     }
 
     @ShellMethod(value = "Tag note")
     public String tag(@ShellOption int noteId, @ShellOption String tag) throws IOException {
-        Optional<Note> noteOptional = noteService.findById(noteId);
+        Optional<Note> noteOptional = nodeService.findById(noteId);
         if (noteOptional.isPresent()) {
             Note note = noteOptional.get();
-            note.tags().add(tag);
-            noteService.update();
+            note.tags().add(Integer.parseInt(tag));
+            nodeService.update();
 
             return getTagSuccessDisplayText(noteId, tag);
         } else {
