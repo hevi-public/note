@@ -59,7 +59,7 @@ function keyPressHandler(event) {
     var input = document.getElementById("command-line");
     var inputValue = input.value;
 
-    if (state === "FIND") {
+    if (state === "FIND" && inputValue != "") {
         var filteredNodeIds = [];
 
         for (var i = 0; i < nodesCache.length; i++) {
