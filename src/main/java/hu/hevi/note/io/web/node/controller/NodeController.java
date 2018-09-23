@@ -13,9 +13,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @RestController
 @RequestMapping("/node")
@@ -38,15 +41,17 @@ public class NodeController {
     @RequestMapping(value = "", method = RequestMethod.POST)
     public int add(@RequestBody AddRequest requestBody) throws IOException {
         // TODO sanitize input
-        if (StringUtils.isBlank(requestBody.getContent())){
+        if (StringUtils.isBlank(requestBody.getContent()) ){
             return 0;
         }
 
         List<Integer> peerIds;
-        if (requestBody.getPeerIds() != null && requestBody.getPeerIds().contains(",")) {
+        if (isNotBlank(requestBody.getPeerIds()) && requestBody.getPeerIds().contains(",")) {
             peerIds = Arrays.asList(requestBody.getPeerIds().split(",")).stream().map(id -> Integer.parseInt(id)).collect(Collectors.toList());
-        } else {
+        } else if (isNotBlank(requestBody.getPeerIds()) && !requestBody.getPeerIds().contains(",")) {
             peerIds = Arrays.asList(Integer.parseInt(requestBody.getPeerIds()));
+        } else {
+            peerIds = new ArrayList<>();
         }
 
         return nodeService.addNote(requestBody.getContent(), peerIds);
