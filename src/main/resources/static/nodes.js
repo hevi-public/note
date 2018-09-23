@@ -1,4 +1,6 @@
 var network;
+var state;
+var nodesCache;
 
 function generateGraph() {
     var xhr = new XMLHttpRequest();
@@ -19,6 +21,8 @@ function generateGraph() {
 }
 
 function init(graph) {
+
+    nodesCache = graph.nodes;
 
     var container = document.getElementById('mynetwork');
     var data = {
@@ -51,24 +55,46 @@ var updateGraph = function() {
 }
 
 function keyPressHandler(event) {
-    if(!(event instanceof KeyboardEvent) || event.key !== "Enter") {
-        return true;
-    }
 
     var input = document.getElementById("command-line");
     var inputValue = input.value;
 
-    if (inputValue === "") {
-        // handle blank enter case
-        sendRequest('GET', '/state/next', "", isJson = false, function(xhr) {
-            input.placeholder = xhr.responseText;
-        });
+    if (state === "FIND") {
+        var filteredNodeIds = [];
+
+        for (var i = 0; i < nodesCache.length; i++) {
+            if (nodesCache[i].label.includes(inputValue)) {
+                filteredNodeIds.push(nodesCache[i].id);
+            }
+        }
+
+        network.selectNodes(filteredNodeIds);
+
+        if (event.key === "Enter") {
+            input.value = "";
+            setNextState(input);
+        }
 
         return false;
     }
 
+    if(!(event instanceof KeyboardEvent) || event.key !== "Enter") {
+        return true;
+    }
+
+    if (inputValue === "") {
+        // handle blank enter case
+        setNextState(input);
+        return false;
+    }
+
+    var connectionIds = [];
+    for (var i = 0; i < network.getSelection().nodes.length; i++) {
+        connectionIds.push(network.getSelection().nodes[i]);
+    }
+
     var content = {
-        peerId: network.getSelection().nodes[0],
+        peerIds: connectionIds.join(),
         content: inputValue
     };
 
@@ -80,6 +106,21 @@ function keyPressHandler(event) {
 
 
     return false;
+}
+
+function setNextState(input) {
+    sendRequest('GET', '/state/next', "", isJson = false, function(xhr) {
+        input.placeholder = xhr.responseText;
+        state = xhr.responseText;
+    });
+}
+
+function find_in_object(my_object, my_criteria){
+
+  return my_object.filter(function(obj) {
+    return obj['label'].includes(my_criteria);
+  });
+
 }
 
 function sendRequest(method, endpoing, content, isJson, callback) {

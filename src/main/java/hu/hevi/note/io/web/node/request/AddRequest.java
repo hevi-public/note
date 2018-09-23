@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class AddRequest {
 
-    private int peerId;
+    private String peerIds;
     private String content;
 }

@@ -41,6 +41,14 @@ public class NodeController {
         if (StringUtils.isBlank(requestBody.getContent())){
             return 0;
         }
-        return nodeService.addNote(requestBody.getContent(), Arrays.asList(requestBody.getPeerId()));
+
+        List<Integer> peerIds;
+        if (requestBody.getPeerIds() != null && requestBody.getPeerIds().contains(",")) {
+            peerIds = Arrays.asList(requestBody.getPeerIds().split(",")).stream().map(id -> Integer.parseInt(id)).collect(Collectors.toList());
+        } else {
+            peerIds = Arrays.asList(Integer.parseInt(requestBody.getPeerIds()));
+        }
+
+        return nodeService.addNote(requestBody.getContent(), peerIds);
     }
 }
