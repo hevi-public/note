@@ -3,6 +3,11 @@
 ## Overview
 
 ## Build
+
+### Dependenies
+
+- Semantic UI - build and copy dist into resources/static/semantic folder
+
 ```
 - git clone https://github.com/hevi-public/spring-shell.git
 - git checkout enter_as_command
