@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,9 +31,11 @@ public class NodeController {
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public List<NodeResponse> getGraphData() throws IOException {
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
         List<Note> notes = nodeService.getNotes(QueryType.FORCE_UPDATE);
         List<NodeResponse> nodes = notes.stream()
-                .map(n -> new NodeResponse(n.getId(), n.getContent(), n.getType().ordinal()))
+                .map(n -> new NodeResponse(n.getId(), n.getDate().format(formatter), n.getContent(), n.getType().name(), n.getType().ordinal()))
                 .collect(Collectors.toList());
 
         return nodes;

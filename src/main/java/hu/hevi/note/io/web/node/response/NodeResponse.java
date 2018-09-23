@@ -8,6 +8,8 @@ import lombok.Value;
 public class NodeResponse {
 
     private int id;
+    private String date;
     private String label;
+    private String type;
     private int group;
 }

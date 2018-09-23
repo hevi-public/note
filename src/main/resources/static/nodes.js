@@ -48,6 +48,15 @@ function init(graph) {
         }
     };
     network = new vis.Network(container, data, options);
+    network.on("selectNode", function (params) {
+
+        var selectedNodeId = network.getSelection().nodes[0];
+        var selectedNode = nodesCache.filter(n => n.id == selectedNodeId);
+
+        $('#card .header').text(selectedNode[0].type);
+        $('#card .meta').text(selectedNode[0].date);
+        $('#card .description').text(selectedNode[0].label);
+    });
 }
 
 var updateGraph = function() {
