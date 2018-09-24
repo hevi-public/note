@@ -63,4 +63,20 @@ public class NodeController {
         nodeService.deleteNode(nodeId);
         return 0;
     }
+
+    @RequestMapping(value = "/join/{id}", method = RequestMethod.PATCH)
+    public int join(@PathVariable Integer id, @RequestParam Integer toBeLinked) throws IOException {
+        // Integer nodeId = Integer.parseInt(id);
+        List<Note> notes = nodeService.getNotes(QueryType.CACHED);
+        notes.stream().filter(note -> note.getId().equals(id)).findFirst().ifPresent(note -> {
+            note.getTags().add(toBeLinked);
+            try {
+                nodeService.update();
+            } catch (IOException e) {
+                // TODO ??
+                e.printStackTrace();
+            }
+        });
+        return 0;
+    }
 }

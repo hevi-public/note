@@ -2,6 +2,9 @@ var network;
 var state;
 var nodesCache;
 
+var UISTATE = "";
+var toJoin = 0;
+
 function generateGraph(redrawInsteadInit) {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', '/graph');
@@ -62,6 +65,17 @@ function init(graph, redrawInsteadInit) {
             $('#card .header').text("#" + selectedNode[0].id + " -> " + selectedNode[0].type);
             $('#card .meta').text(selectedNode[0].date);
             $('#card .description').text(selectedNode[0].label);
+
+            if (UISTATE == "JOIN") {
+                sendRequest('PATCH', "/node/join/" + network.getSelection().nodes[0] + "?toBeLinked=" + toJoin, "", false, function() {
+                    console.log("hahhaha")
+                    UISTATE = "";
+                    toJoin = 0;
+                    updateGraph();
+                });
+
+            }
+
         });
     } else {
         network.setData(data);
@@ -69,7 +83,7 @@ function init(graph, redrawInsteadInit) {
 }
 
 var updateGraph = function() {
-    generateGraph();
+    generateGraph(true);
 }
 
 function keyPressHandler(event) {
@@ -170,12 +184,17 @@ $( document ).ready(function() {
         $('.ui.basic.modal').modal('show');
     });
 
+    $('#join-node').click(function() {
+       UISTATE = "JOIN";
+       toJoin = network.getSelection().nodes[0];
+    });
+
     $('#delete-selected-node').click(function() {
         network.getSelection().nodes[0];
 
         sendRequest('DELETE', "/node/" + network.getSelection().nodes[0], "", false, function() {
             console.log("hahhaha")
-            generateGraph(true);
+            updateGraph();
         });
     });
 });
