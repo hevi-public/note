@@ -35,31 +35,19 @@ function init(graph, redrawInsteadInit) {
     var options = {
         nodes: {
             shape: 'dot',
-            size: 16,
-            max: 10,
-            min: 0.5,
-            scaling: {
-                customScalingFunction: function (min,max,tagsSize) {
-                                                     if (max === min) {
-                                                       return 0.5;
-                                                     } else {
-                                                       var scale = 1 / (max - min);
-                                                       return Math.max(0,(tagsSize - min)*scale);
-                                                     }
-                                                   }
-               }
+            size: 16
         },
         physics: {
             forceAtlas2Based: {
                 gravitationalConstant: -20,
                 centralGravity: 0.003,
-                springLength: 180,
-                springConstant: 0.9
+                springLength: 160,
+                springConstant: 0.1
             },
             maxVelocity: 146,
             solver: 'forceAtlas2Based',
             timestep: 0.35,
-            stabilization: {iterations: 200}
+            stabilization: {iterations: 150}
         },
         layout: {
             randomSeed: 0

@@ -17,7 +17,6 @@ public class NodeResponse {
     private String type;
     private int group;
     private int mass;
-    private int tagsSize;
 
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -29,7 +28,7 @@ public class NodeResponse {
                 mass = 1;
                 break;
             case CATEGORY:
-                mass = 5;
+                mass = 2;
                 break;
             default:
                 throw new NotImplementedException();
@@ -46,6 +45,5 @@ public class NodeResponse {
         this.type = node.getType().name();
         this.group = node.getType().ordinal();
         this.mass = mass;
-        this.tagsSize = node.getTags().size();
     }
 }
