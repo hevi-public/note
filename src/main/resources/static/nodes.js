@@ -71,12 +71,12 @@ function init(graph) {
 
         if (UISTATE == "JOIN") {
             sendRequest('PATCH', "/node/join/" + network.getSelection().nodes[0] + "?toBeLinked=" + toJoin, "", false, function() {
-                UISTATE = "";
-                toJoin = 0;
                 // TODO refactor
                 updateGraph({
                     edges: [{from: toJoin, to: network.getSelection().nodes[0]}]
                 }, false);
+                UISTATE = "";
+                toJoin = 0;
             });
 
         }
@@ -86,13 +86,13 @@ function init(graph) {
 
 var updateGraph = function(data, isRemove) {
     // TODO check if array
-    //      also generally sort out tis concept
+    //      also generally sort out this concept
     if (data.hasOwnProperty("edges")) {
         if (isRemove) {
             // TODO traverse through array
             edgesCache.remove(data.edges[0].id);
         } else {
-            edgesCache.update(data.edges);
+            edgesCache.update(data.edges[0]);
         }
     } else if(data.hasOwnProperty("nodes")) {
         if (isRemove) {
