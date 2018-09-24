@@ -90,6 +90,7 @@ function init(graph) {
         }
 
     });
+}
 
 var updateGraph = function(data, isRemove) {
     // TODO check if array
