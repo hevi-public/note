@@ -40,6 +40,16 @@ public class NodeService {
         return cachedNotes;
     }
 
+    public int addNote(Note note) throws IOException {
+        OptionalInt optionalMax = cachedNotes.stream().mapToInt(n -> n.getId()).max();
+        int maxId = optionalMax.equals(OptionalInt.empty()) ? 0 : optionalMax.getAsInt();
+
+        int id = maxId + 1;
+        cachedNotes.add(note);
+        update();
+        return id;
+    }
+
     public int addNote(String content) throws IOException {
         OptionalInt optionalMax = cachedNotes.stream().mapToInt(n -> n.getId()).max();
         int maxId = optionalMax.equals(OptionalInt.empty()) ? 0 : optionalMax.getAsInt();

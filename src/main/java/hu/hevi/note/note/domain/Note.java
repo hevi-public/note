@@ -2,14 +2,13 @@ package hu.hevi.note.note.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
-@Value
+@Data
 @Builder
 @AllArgsConstructor
 public class Note {
@@ -19,6 +18,14 @@ public class Note {
     private String content;
     private NodeType type;
     private List<Integer> tags;
+
+    public Note(Note note) {
+        this.id = note.id;
+        this.date = LocalDateTime.now();
+        this.content = note.content;
+        this.type = note.type;
+        this.tags = note.tags;
+    }
 
     public Note(int id, String content, NodeType type, List<Integer> tags) {
         this.id = id;

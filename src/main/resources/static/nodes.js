@@ -90,7 +90,6 @@ function init(graph) {
         }
 
     });
-}
 
 var updateGraph = function(data, isRemove) {
     // TODO check if array
@@ -115,17 +114,41 @@ var updateGraph = function(data, isRemove) {
 }
 
 function bodyKeyPressHandler(event) {
-    if (event.key === "d" && event.ctrlKey === true) {
-        confirmDeleteSelectedNode();
-    } else if (event.key === "s" && event.ctrlKey === true) {
-        UISTATE = "JOIN";
-        toJoin = network.getSelection().nodes[0];
-        setCursorByID(document.body, 'crosshair');
+    if (event.ctrlKey === true) {
+        switch (event.key) {
+            case 'd':
+                confirmDeleteSelectedNode();
+                break;
+            case 's':
+                UISTATE = "JOIN";
+                toJoin = network.getSelection().nodes[0];
+                setCursorByID(document.body, 'crosshair');
+                break;
+            case '1':
+                changeSelectedNodeType('NODE');
+                break;
+            case '2':
+                changeSelectedNodeType('CATEGORY');
+                break;
+        }
     }
 }
 
 function setCursorByID(id,cursorStyle) {
     if (id.style) id.style.cursor=cursorStyle;
+}
+
+function changeSelectedNodeType(type) {
+    if (network.getSelection().nodes.length === 0) return;
+
+    var selectedNodeId = network.getSelection().nodes[0];
+    var selectedNode = nodesCache.get(selectedNodeId);
+
+    sendRequest('PATCH', "/node/" + selectedNodeId + "/type/" + type, "", false, function(xhr) {
+        var graphResponse = JSON.parse(xhr.response);
+        nodesCache.remove(selectedNodeId);
+        nodesCache.add(graphResponse.nodes);
+    });
 }
 
 function textInputKeyPressHandler(event) {
@@ -234,19 +257,25 @@ $( document ).ready(function() {
     });
 
     $('#delete-selected-node').click(function() {
-        sendRequest('DELETE', "/node/" + network.getSelection().nodes[0], "", false, function() {
-            var node = nodesCache.get(network.getSelection().nodes[0]);
-            updateGraph({
-                nodes: [node]
-            }, true);
-        });
+        if (network.getSelectedNodes().length > 0) {
+            sendRequest('DELETE', "/node/" + network.getSelection().nodes[0], "", false, function() {
+                var node = nodesCache.get(network.getSelection().nodes[0]);
+                updateGraph({
+                    nodes: [node]
+                }, true);
+            });
+        } else {
+            var selectedEdgeId = network.getSelectedEdges()[0];
+            var selectedEdge = edgesCache.get(selectedEdgeId);
+            sendRequest('DELETE', "/node/link/between/" + selectedEdge.from + "/and/" + selectedEdge.to, "", false, function() {
+                edgesCache.remove(selectedEdgeId);
+            });
+        }
     });
 });
 
 var confirmDeleteSelectedNode = function() {
     $('.ui.basic.modal').modal('show');
-
-
 }
 
 
