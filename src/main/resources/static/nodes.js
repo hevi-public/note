@@ -112,7 +112,7 @@ function bodyKeyPressHandler(event) {
     }
 }
 
-function textInputkeyPressHandler(event) {
+function textInputKeyPressHandler(event) {
 
     var input = document.getElementById("command-line");
     var inputValue = input.value;
