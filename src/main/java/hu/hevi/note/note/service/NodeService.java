@@ -2,6 +2,7 @@ package hu.hevi.note.note.service;
 
 import hu.hevi.note.io.file.FileHandler;
 import hu.hevi.note.note.domain.NodeType;
+import hu.hevi.note.note.service.exception.NodeNotFoundException;
 import hu.hevi.note.note.service.type.QueryType;
 import hu.hevi.note.note.util.NoteUtils;
 import hu.hevi.note.note.domain.Note;
@@ -87,5 +88,28 @@ public class NodeService {
     private List<Note> readNodesFromFile() throws IOException {
         List<String> lines = fileHandler.readLines();
         return noteUtils.convertToNotes(lines);
+    }
+
+    public void deleteNode(Integer id) {
+        if (!contans(id)) {
+            throw new NodeNotFoundException(id);
+        }
+
+        cachedNotes.stream()
+                .filter(n -> n.getId().equals(id))
+                .findFirst()
+                .ifPresent(note -> {
+                    cachedNotes.remove(note);
+                    try {
+                        this.update();
+                    } catch (IOException e) {
+                        // TODO ??
+                        e.printStackTrace();
+                    }
+                });
+    }
+
+    private boolean contans(Integer id) {
+        return cachedNotes.stream().filter(n -> n.getId().equals(id)).findFirst().isPresent();
     }
 }

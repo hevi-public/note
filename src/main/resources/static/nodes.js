@@ -2,7 +2,7 @@ var network;
 var state;
 var nodesCache;
 
-function generateGraph() {
+function generateGraph(redrawInsteadInit) {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', '/graph');
     xhr.send(null);
@@ -12,7 +12,7 @@ function generateGraph() {
       var OK = 200;
       if (xhr.readyState === DONE) {
         if (xhr.status === OK) {
-          init(JSON.parse(xhr.responseText));
+          init(JSON.parse(xhr.responseText), redrawInsteadInit);
         } else {
           console.log('Error: ' + xhr.status);
         }
@@ -20,7 +20,7 @@ function generateGraph() {
     };
 }
 
-function init(graph) {
+function init(graph, redrawInsteadInit) {
 
     nodesCache = graph.nodes;
 
@@ -45,18 +45,27 @@ function init(graph) {
             solver: 'forceAtlas2Based',
             timestep: 0.35,
             stabilization: {iterations: 150}
+        },
+        layout: {
+            randomSeed: 0
         }
     };
-    network = new vis.Network(container, data, options);
-    network.on("selectNode", function (params) {
 
-        var selectedNodeId = network.getSelection().nodes[0];
-        var selectedNode = nodesCache.filter(n => n.id == selectedNodeId);
+    if (!redrawInsteadInit) {
+        network = new vis.Network(container, data, options);
 
-        $('#card .header').text(selectedNode[0].type);
-        $('#card .meta').text(selectedNode[0].date);
-        $('#card .description').text(selectedNode[0].label);
-    });
+        network.on("selectNode", function (params) {
+
+            var selectedNodeId = network.getSelection().nodes[0];
+            var selectedNode = nodesCache.filter(n => n.id == selectedNodeId);
+
+            $('#card .header').text("#" + selectedNode[0].id + " -> " + selectedNode[0].type);
+            $('#card .meta').text(selectedNode[0].date);
+            $('#card .description').text(selectedNode[0].label);
+        });
+    } else {
+        network.setData(data);
+    }
 }
 
 var updateGraph = function() {
@@ -154,3 +163,26 @@ function sendRequest(method, endpoing, content, isJson, callback) {
       }
     };
 }
+
+// CLICK HANDLERS
+$( document ).ready(function() {
+    $('#remove-node').click(function() {
+        $('.ui.basic.modal').modal('show');
+    });
+
+    $('#delete-selected-node').click(function() {
+        network.getSelection().nodes[0];
+
+        sendRequest('DELETE', "/node/" + network.getSelection().nodes[0], "", false, function() {
+            console.log("hahhaha")
+            generateGraph(true);
+        });
+    });
+});
+
+
+
+
+
+
+

@@ -25,7 +25,6 @@
 
     <script type="text/javascript" src="vis.js"></script>
     <link href="vis-network.min.css" rel="stylesheet" type="text/css"/>
-    <script type="text/javascript" src="nodes.js"></script>
 
     <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css"/>
     <script
@@ -34,40 +33,63 @@
             crossorigin="anonymous"></script>
     <script src="semantic/dist/semantic.min.js"></script>
 
+    <script type="text/javascript" src="nodes.js"></script>
 
 </head>
 
 <body onload="generateGraph()">
-<div id="content" class="ui grid">
-    <div class="left floated five wide column">
-        <div id="mynetwork" class="center"></div>
-        <div class="center">
-            <input type="text" id="command-line" placeholder="State should display as placeholder?" class="input-border" style="margin-top: 20px; width: 1100px; height: 40px; font-size: 18px" onkeypress="keyPressHandler(event)" />
+    <div id="content" class="ui grid">
+        <div class="left floated five wide column">
+            <div id="mynetwork" class="center"></div>
+            <div class="center">
+                <input type="text" id="command-line" placeholder="State should display as placeholder?" class="input-border" style="margin-top: 20px; width: 1100px; height: 40px; font-size: 18px" onkeypress="keyPressHandler(event)" />
+            </div>
         </div>
-    </div>
-    <div class="right floated five wide column">
-        <div class="ui cards">
-            <div id="card" class="card">
-                <div class="content">
-                    <div class="header">
-                        Jenny Hess
+        <div class="right floated five wide column">
+            <div class="ui cards">
+                <div id="card" class="card">
+                    <div class="content">
+                        <div class="header">
+                            Jenny Hess
+                        </div>
+                        <div class="meta">
+                            New Member
+                        </div>
+                        <div class="description">
+                            Jenny wants to add you to the group <b>best friends</b>
+                        </div>
                     </div>
-                    <div class="meta">
-                        New Member
-                    </div>
-                    <div class="description">
-                        Jenny wants to add you to the group <b>best friends</b>
-                    </div>
-                </div>
-                <div class="extra content">
-                    <div class="ui two buttons">
-                        <div class="ui basic green button">Approve</div>
-                        <div class="ui basic red button">Remove node</div>
+                    <div class="extra content">
+                        <div class="ui two buttons">
+                            <div class="ui basic green button">Join</div>
+                            <div id="remove-node" class="ui basic red button">Remove node</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+
+    <!-- DELETE NODE CONFIRM MODAL -->
+    <div class="ui basic modal">
+        <div class="ui icon header">
+            <i class="trash alternate icon red"></i>
+        </div>
+        <div class="content center">
+            <p>Do you _really_ want to delete this node?</p>
+        </div>
+        <div class="actions">
+            <div id="delete-selected-node" class="ui red basic cancel inverted button">
+                <i class="remove icon"></i>
+                Warning! Permanent Deletion!
+            </div>
+            <div class="ui green ok inverted button">
+                <i class="checkmark icon"></i>
+                Wait! I'd like to keep it a bit longer! But thanks for asking!
+            </div>
+        </div>
+    </div>
+    <!-- DELETE NODE CONFIRM MODAL END-->
+
 </body>
 </html>

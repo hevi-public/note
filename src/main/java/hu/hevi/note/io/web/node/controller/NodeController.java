@@ -7,10 +7,7 @@ import hu.hevi.note.note.service.NodeService;
 import hu.hevi.note.note.service.type.QueryType;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
@@ -58,5 +55,12 @@ public class NodeController {
         }
 
         return nodeService.addNote(requestBody.getContent(), peerIds);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public int delete(@PathVariable String id) throws IOException {
+        Integer nodeId = Integer.parseInt(id);
+        nodeService.deleteNode(nodeId);
+        return 0;
     }
 }
