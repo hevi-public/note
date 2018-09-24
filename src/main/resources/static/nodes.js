@@ -106,7 +106,13 @@ var updateGraph = function(data, isRemove) {
 
 }
 
-function keyPressHandler(event) {
+function bodyKeyPressHandler(event) {
+    if (event.key === "d" && event.ctrlKey === true) {
+        confirmDeleteSelectedNode();
+    }
+}
+
+function textInputkeyPressHandler(event) {
 
     var input = document.getElementById("command-line");
     var inputValue = input.value;
@@ -203,7 +209,7 @@ function sendRequest(method, endpoing, content, isJson, callback) {
 // CLICK HANDLERS
 $( document ).ready(function() {
     $('#remove-node').click(function() {
-        $('.ui.basic.modal').modal('show');
+        confirmDeleteSelectedNode();
     });
 
     $('#join-node').click(function() {
@@ -212,8 +218,6 @@ $( document ).ready(function() {
     });
 
     $('#delete-selected-node').click(function() {
-        network.getSelection().nodes[0];
-
         sendRequest('DELETE', "/node/" + network.getSelection().nodes[0], "", false, function() {
             var node = nodesCache.get(network.getSelection().nodes[0]);
             updateGraph({
@@ -223,8 +227,11 @@ $( document ).ready(function() {
     });
 });
 
+var confirmDeleteSelectedNode = function() {
+    $('.ui.basic.modal').modal('show');
 
 
+}
 
 
 
