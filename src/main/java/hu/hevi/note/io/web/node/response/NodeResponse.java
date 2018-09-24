@@ -16,19 +16,19 @@ public class NodeResponse {
     private String label;
     private String type;
     private int group;
-    private int mass;
+    private int value;
 
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public NodeResponse(Note node) {
-        // TODO move mass calculation away
-        int mass = 1;
+        // TODO move value calculation away
+        int value = 1;
         switch (node.getType()) {
             case NODE:
-                mass = 1;
+                value = 5 + node.getTags().size();
                 break;
             case CATEGORY:
-                mass = 2;
+                value = 30 + (node.getTags().size() * 30);
                 break;
             default:
                 throw new NotImplementedException();
@@ -37,13 +37,13 @@ public class NodeResponse {
         // TODO make this more sophisticated
         //      weight references in both directions
         //      if necessary with different weight
-        mass += node.getTags().size() * 0.1;
+        value += node.getTags().size() * 0.1;
 
         this.id = node.getId();
         this.date = node.getDate().format(formatter);
         this.label = node.getContent();
         this.type = node.getType().name();
         this.group = node.getType().ordinal();
-        this.mass = mass;
+        this.value = value;
     }
 }

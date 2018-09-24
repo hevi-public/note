@@ -33,7 +33,14 @@ function init(graph) {
     var options = {
             nodes: {
                 shape: 'dot',
-                size: 16
+                size: 16,
+                scaling: {
+                    customScalingFunction: function (min,max,total,value) {
+                        return value/total;
+                    },
+                    min:5,
+                    max:150
+                },
             },
             physics: {
                 forceAtlas2Based: {
@@ -66,7 +73,7 @@ function init(graph) {
         var selectedNode = nodesCache.get(selectedNodeId);
 
         $('#card .header').text("#" + selectedNode.id + " -> " + selectedNode.type);
-        $('#card .meta').text(selectedNode.date + " | mass: " + selectedNode.mass);
+        $('#card .meta').text(selectedNode.date + " | value: " + selectedNode.value);
         $('#card .description').text(selectedNode.label);
 
         if (UISTATE == "JOIN") {
