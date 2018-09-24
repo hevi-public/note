@@ -1,11 +1,12 @@
 var network;
 var state;
 var nodesCache;
+var edgesCache;
 
 var UISTATE = "";
 var toJoin = 0;
 
-function generateGraph(redrawInsteadInit) {
+function generateGraph() {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', '/graph');
     xhr.send(null);
@@ -15,7 +16,7 @@ function generateGraph(redrawInsteadInit) {
       var OK = 200;
       if (xhr.readyState === DONE) {
         if (xhr.status === OK) {
-          init(JSON.parse(xhr.responseText), redrawInsteadInit);
+          init(JSON.parse(xhr.responseText));
         } else {
           console.log('Error: ' + xhr.status);
         }
@@ -23,67 +24,86 @@ function generateGraph(redrawInsteadInit) {
     };
 }
 
-function init(graph, redrawInsteadInit) {
+function init(graph) {
 
-    nodesCache = graph.nodes;
+    nodesCache = new vis.DataSet(graph.nodes);
+    edgesCache = new vis.DataSet(graph.edges);
 
     var container = document.getElementById('mynetwork');
-    var data = {
-        nodes: graph.nodes,
-        edges: graph.edges
-    };
     var options = {
-        nodes: {
-            shape: 'dot',
-            size: 16
-        },
-        physics: {
-            forceAtlas2Based: {
-                gravitationalConstant: -20,
-                centralGravity: 0.003,
-                springLength: 160,
-                springConstant: 0.1
+            nodes: {
+                shape: 'dot',
+                size: 16
             },
-            maxVelocity: 146,
-            solver: 'forceAtlas2Based',
-            timestep: 0.35,
-            stabilization: {iterations: 150}
-        },
-        layout: {
-            randomSeed: 0
-        }
+            physics: {
+                forceAtlas2Based: {
+                    gravitationalConstant: -20,
+                    centralGravity: 0.003,
+                    springLength: 160,
+                    springConstant: 0.1
+                },
+                maxVelocity: 146,
+                solver: 'forceAtlas2Based',
+                timestep: 0.35,
+                stabilization: {iterations: 150}
+            },
+            layout: {
+                randomSeed: 0
+            }
+        };
+
+    var data = {
+        nodes: nodesCache,
+        edges: edgesCache,
+        options: options
     };
 
-    if (!redrawInsteadInit) {
-        network = new vis.Network(container, data, options);
+    network = new vis.Network(container, data, options);
 
-        network.on("selectNode", function (params) {
+    network.on("selectNode", function (params) {
 
-            var selectedNodeId = network.getSelection().nodes[0];
-            var selectedNode = nodesCache.filter(n => n.id == selectedNodeId);
+        var selectedNodeId = network.getSelection().nodes[0];
+        var selectedNode = nodesCache.get(selectedNodeId);
 
-            $('#card .header').text("#" + selectedNode[0].id + " -> " + selectedNode[0].type);
-            $('#card .meta').text(selectedNode[0].date + " | mass: " + selectedNode[0].mass);
-            $('#card .description').text(selectedNode[0].label);
+        $('#card .header').text("#" + selectedNode.id + " -> " + selectedNode.type);
+        $('#card .meta').text(selectedNode.date + " | mass: " + selectedNode.mass);
+        $('#card .description').text(selectedNode.label);
 
-            if (UISTATE == "JOIN") {
-                sendRequest('PATCH', "/node/join/" + network.getSelection().nodes[0] + "?toBeLinked=" + toJoin, "", false, function() {
-                    console.log("hahhaha")
-                    UISTATE = "";
-                    toJoin = 0;
-                    updateGraph();
-                });
+        if (UISTATE == "JOIN") {
+            sendRequest('PATCH', "/node/join/" + network.getSelection().nodes[0] + "?toBeLinked=" + toJoin, "", false, function() {
+                UISTATE = "";
+                toJoin = 0;
+                // TODO refactor
+                updateGraph({
+                    edges: [{from: toJoin, to: network.getSelection().nodes[0]}]
+                }, false);
+            });
 
-            }
+        }
 
-        });
-    } else {
-        network.setData(data);
-    }
+    });
 }
 
-var updateGraph = function() {
-    generateGraph(true);
+var updateGraph = function(data, isRemove) {
+    // TODO check if array
+    //      also generally sort out tis concept
+    if (data.hasOwnProperty("edges")) {
+        if (isRemove) {
+            // TODO traverse through array
+            edgesCache.remove(data.edges[0].id);
+        } else {
+            edgesCache.update(data.edges);
+        }
+    } else if(data.hasOwnProperty("nodes")) {
+        if (isRemove) {
+            nodesCache.remove(data.nodes[0].id);
+        } else {
+            nodesCache.update(data.nodes);
+        }
+    } else {
+        // TODO throw error
+    }
+
 }
 
 function keyPressHandler(event) {
@@ -94,11 +114,11 @@ function keyPressHandler(event) {
     if (state === "FIND" && inputValue != "") {
         var filteredNodeIds = [];
 
-        for (var i = 0; i < nodesCache.length; i++) {
-            if (nodesCache[i].label.includes(inputValue)) {
-                filteredNodeIds.push(nodesCache[i].id);
+        nodesCache.forEach(function(node) {
+            if (node.label.includes(inputValue)) {
+                filteredNodeIds.push(node.id);
             }
-        }
+        });
 
         network.selectNodes(filteredNodeIds);
 
@@ -132,9 +152,11 @@ function keyPressHandler(event) {
 
     // add node
     sendRequest('POST', '/node', content, isJson = true, function(xhr) {
-        updateGraph();
-        input.value = "";
+        updateGraph({
+            nodes: [JSON.parse(xhr.response)]
+        }, false);
     });
+    input.value = "";
 
 
     return false;
@@ -193,8 +215,10 @@ $( document ).ready(function() {
         network.getSelection().nodes[0];
 
         sendRequest('DELETE', "/node/" + network.getSelection().nodes[0], "", false, function() {
-            console.log("hahhaha")
-            updateGraph();
+            var node = nodesCache.get(network.getSelection().nodes[0]);
+            updateGraph({
+                nodes: [node]
+            }, true);
         });
     });
 });

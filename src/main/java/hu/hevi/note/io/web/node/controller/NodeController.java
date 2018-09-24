@@ -39,10 +39,11 @@ public class NodeController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public int add(@RequestBody AddRequest requestBody) throws IOException {
+    public NodeResponse add(@RequestBody AddRequest requestBody) throws IOException {
         // TODO sanitize input
-        if (StringUtils.isBlank(requestBody.getContent()) ){
-            return 0;
+        if (StringUtils.isBlank(requestBody.getContent())) {
+            // TODO do something meaningful here
+            return null;
         }
 
         List<Integer> peerIds;
@@ -54,7 +55,7 @@ public class NodeController {
             peerIds = new ArrayList<>();
         }
 
-        return nodeService.addNote(requestBody.getContent(), peerIds);
+        return new NodeResponse(nodeService.addNote(requestBody.getContent(), peerIds));
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)

@@ -51,7 +51,7 @@ public class NodeService {
         return id;
     }
 
-    public int addNote(String content, List<Integer> connections) throws IOException {
+    public Note addNote(String content, List<Integer> connections) throws IOException {
         OptionalInt optionalMax = cachedNotes.stream().mapToInt(n -> n.getId()).max();
         int maxId = optionalMax.equals(OptionalInt.empty()) ? 0 : optionalMax.getAsInt();
 
@@ -59,7 +59,7 @@ public class NodeService {
         Note note = new Note(id, content, NodeType.NODE, connections);
         cachedNotes.add(note);
         update();
-        return id;
+        return note;
     }
 
     public void update() throws IOException {
