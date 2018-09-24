@@ -25,10 +25,10 @@ public class NodeResponse {
         int value = 1;
         switch (node.getType()) {
             case NODE:
-                value = 5 + node.getTags().size();
+                value = 10 + (node.getTags().size() * 5);
                 break;
             case CATEGORY:
-                value = 30 + (node.getTags().size() * 30);
+                value = 50 + (node.getTags().size() * 30);
                 break;
             default:
                 throw new NotImplementedException();

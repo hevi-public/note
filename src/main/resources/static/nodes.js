@@ -39,15 +39,15 @@ function init(graph) {
                         return value/total;
                     },
                     min:5,
-                    max:150
+                    max:500
                 },
             },
             physics: {
                 forceAtlas2Based: {
                     gravitationalConstant: -20,
                     centralGravity: 0.003,
-                    springLength: 160,
-                    springConstant: 0.1
+                    springLength: 180,
+                    springConstant: 0.5
                 },
                 maxVelocity: 146,
                 solver: 'forceAtlas2Based',
