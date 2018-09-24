@@ -77,6 +77,7 @@ function init(graph) {
                 }, false);
                 UISTATE = "";
                 toJoin = 0;
+                setCursorByID(document.body, 'default');
             });
 
         }
@@ -109,7 +110,15 @@ var updateGraph = function(data, isRemove) {
 function bodyKeyPressHandler(event) {
     if (event.key === "d" && event.ctrlKey === true) {
         confirmDeleteSelectedNode();
+    } else if (event.key === "s" && event.ctrlKey === true) {
+        UISTATE = "JOIN";
+        toJoin = network.getSelection().nodes[0];
+        setCursorByID(document.body, 'crosshair');
     }
+}
+
+function setCursorByID(id,cursorStyle) {
+    if (id.style) id.style.cursor=cursorStyle;
 }
 
 function textInputKeyPressHandler(event) {
