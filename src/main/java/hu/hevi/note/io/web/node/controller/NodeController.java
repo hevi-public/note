@@ -32,7 +32,7 @@ public class NodeController {
 
         List<Note> notes = nodeService.getNotes(QueryType.FORCE_UPDATE);
         List<NodeResponse> nodes = notes.stream()
-                .map(n -> new NodeResponse(n.getId(), n.getDate().format(formatter), n.getContent(), n.getType().name(), n.getType().ordinal()))
+                .map(n -> new NodeResponse(n))
                 .collect(Collectors.toList());
 
         return nodes;

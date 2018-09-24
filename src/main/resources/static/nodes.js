@@ -39,10 +39,10 @@ function init(graph, redrawInsteadInit) {
         },
         physics: {
             forceAtlas2Based: {
-                gravitationalConstant: -26,
-                centralGravity: 0.005,
-                springLength: 230,
-                springConstant: 0.18
+                gravitationalConstant: -20,
+                centralGravity: 0.003,
+                springLength: 160,
+                springConstant: 0.1
             },
             maxVelocity: 146,
             solver: 'forceAtlas2Based',
@@ -63,7 +63,7 @@ function init(graph, redrawInsteadInit) {
             var selectedNode = nodesCache.filter(n => n.id == selectedNodeId);
 
             $('#card .header').text("#" + selectedNode[0].id + " -> " + selectedNode[0].type);
-            $('#card .meta').text(selectedNode[0].date);
+            $('#card .meta').text(selectedNode[0].date + " | mass: " + selectedNode[0].mass);
             $('#card .description').text(selectedNode[0].label);
 
             if (UISTATE == "JOIN") {

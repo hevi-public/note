@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,13 +25,9 @@ public class GraphController {
 
     @RequestMapping(method = RequestMethod.GET)
     public GraphResponse getGraphData() throws IOException {
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
         List<Note> notes = nodeService.getNotes(QueryType.FORCE_UPDATE);
         List<NodeResponse> nodes = notes.stream()
-                .map(n -> new NodeResponse(n.getId(), n.getDate().format(formatter), n.getContent(), n.getType().name(), n.getType().ordinal()))
-                .collect(Collectors.toList());
+                .map(n -> new NodeResponse(n)).collect(Collectors.toList());
 
 
         List<EdgeResponse> edges = new ArrayList<>();
