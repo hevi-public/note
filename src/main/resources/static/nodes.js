@@ -117,27 +117,6 @@ var updateGraph = function(data, isRemove) {
 
 }
 
-function bodyKeyPressHandler(event) {
-    if (event.ctrlKey === true) {
-        switch (event.key) {
-            case 'd':
-                confirmDeleteSelectedNode();
-                break;
-            case 's':
-                UISTATE = "JOIN";
-                toJoin = network.getSelection().nodes[0];
-                setCursorByID(document.body, 'crosshair');
-                break;
-            case '1':
-                changeSelectedNodeType('NODE');
-                break;
-            case '2':
-                changeSelectedNodeType('CATEGORY');
-                break;
-        }
-    }
-}
-
 function setCursorByID(id,cursorStyle) {
     if (id.style) id.style.cursor=cursorStyle;
 }
@@ -153,62 +132,6 @@ function changeSelectedNodeType(type) {
         nodesCache.remove(selectedNodeId);
         nodesCache.add(graphResponse.nodes);
     });
-}
-
-function textInputKeyPressHandler(event) {
-
-    var input = document.getElementById("command-line");
-    var inputValue = input.value;
-
-    if (state === "FIND" && inputValue != "") {
-        var filteredNodeIds = [];
-
-        nodesCache.forEach(function(node) {
-            if (node.label.includes(inputValue)) {
-                filteredNodeIds.push(node.id);
-            }
-        });
-
-        network.selectNodes(filteredNodeIds);
-
-        if (event.key === "Enter") {
-            input.value = "";
-            setNextState(input);
-        }
-
-        return false;
-    }
-
-    if(!(event instanceof KeyboardEvent) || event.key !== "Enter") {
-        return true;
-    }
-
-    if (inputValue === "") {
-        // handle blank enter case
-        setNextState(input);
-        return false;
-    }
-
-    var connectionIds = [];
-    for (var i = 0; i < network.getSelection().nodes.length; i++) {
-        connectionIds.push(network.getSelection().nodes[i]);
-    }
-
-    var content = {
-        peerIds: connectionIds.join(),
-        content: inputValue
-    };
-
-    // add node
-    sendRequest('POST', '/node', content, isJson = true, function(xhr) {
-        updateGraph({
-            nodes: [JSON.parse(xhr.response)]
-        }, false);
-    });
-    input.value = "";
-
-
-    return false;
 }
 
 function setNextState(input) {
@@ -282,6 +205,84 @@ var confirmDeleteSelectedNode = function() {
     $('.ui.basic.modal').modal('show');
 }
 
+function textInputKeyPressHandler(event) {
+
+    var input = document.getElementById("command-line");
+    var inputValue = input.value;
+
+    if (state === "FIND" && inputValue != "") {
+        var filteredNodeIds = [];
+
+        nodesCache.forEach(function(node) {
+            if (node.label.includes(inputValue)) {
+                filteredNodeIds.push(node.id);
+            }
+        });
+
+        network.selectNodes(filteredNodeIds);
+
+        if (event.key === "Enter") {
+            input.value = "";
+            setNextState(input);
+        }
+
+        return false;
+    }
+
+    if(!(event instanceof KeyboardEvent) || event.key !== "Enter") {
+        return true;
+    }
+
+    if (inputValue === "") {
+        // handle blank enter case
+        setNextState(input);
+        return false;
+    }
+
+    var connectionIds = [];
+    for (var i = 0; i < network.getSelection().nodes.length; i++) {
+        connectionIds.push(network.getSelection().nodes[i]);
+    }
+
+    var content = {
+        peerIds: connectionIds.join(),
+        content: inputValue
+    };
+
+    // add node
+    sendRequest('POST', '/node', content, isJson = true, function(xhr) {
+        updateGraph({
+            nodes: [JSON.parse(xhr.response)]
+        }, false);
+    });
+    input.value = "";
 
 
+    return false;
+}
 
+function bodyKeyPressHandler(event) {
+    if (event.ctrlKey === true) {
+        switch (event.key) {
+            case 'd':
+                confirmDeleteSelectedNode();
+                break;
+            case 's':
+                UISTATE = "JOIN";
+                toJoin = network.getSelection().nodes[0];
+                setCursorByID(document.body, 'crosshair');
+                break;
+            case 'p':
+                $('.ui.sidebar')
+                    .sidebar('setting', 'transition', 'overlay')
+                    .sidebar('toggle');
+                break;
+            case '1':
+                changeSelectedNodeType('NODE');
+                break;
+            case '2':
+                changeSelectedNodeType('CATEGORY');
+                break;
+        }
+    }
+}
