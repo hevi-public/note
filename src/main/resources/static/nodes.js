@@ -136,7 +136,7 @@ function changeSelectedNodeType(type) {
 
 function setNextState(input) {
     sendRequest('GET', '/state/next', "", isJson = false, function(xhr) {
-        input.placeholder = xhr.responseText;
+        document.getElementById('command-line-status').text = xhr.responseText;
         state = xhr.responseText;
     });
 }
