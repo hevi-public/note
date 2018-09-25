@@ -41,6 +41,9 @@ function init(graph) {
                     min:5,
                     max:500
                 },
+                font: {
+                    color: '#dddddd'
+                }
             },
             physics: {
                 forceAtlas2Based: {
