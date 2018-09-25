@@ -93,6 +93,12 @@ function init(graph) {
         }
 
     });
+
+    network.on("click", function (params) {
+        $(function () {
+            $('input').blur();
+        });
+    });
 }
 
 var updateGraph = function(data, isRemove) {
@@ -210,7 +216,7 @@ function textInputKeyPressHandler(event) {
     var input = document.getElementById("command-line");
     var inputValue = input.value;
 
-    if (state === "FIND" && inputValue != "") {
+    if (state === "FIND") {
         var filteredNodeIds = [];
 
         nodesCache.forEach(function(node) {
@@ -219,14 +225,29 @@ function textInputKeyPressHandler(event) {
             }
         });
 
-        network.selectNodes(filteredNodeIds);
+        if (inputValue != "") {
+            network.selectNodes(filteredNodeIds);
+        } else {
+            // TODO check if filteredNodeIds are empty or not when inputValue is empty
+            // it feels like it matches everything when searching for empty string
+            // if fixed, this call shouldn't be needed
+            network.unselectAll();
+        }
+
+        network.fit({
+            nodes: filteredNodeIds
+            //,
+//            animation: {
+//                duration: 0.3,
+//                easingFunction: 'easeOutQuad'
+//            }
+        });
 
         if (event.key === "Enter") {
             input.value = "";
-            setNextState(input);
         }
 
-        return false;
+        return event;
     }
 
     if(!(event instanceof KeyboardEvent) || event.key !== "Enter") {
