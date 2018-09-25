@@ -220,10 +220,12 @@ function textInputKeyPressHandler(event) {
         var filteredNodeIds = [];
 
         nodesCache.forEach(function(node) {
-            if (node.label.includes(inputValue)) {
+            if (inputValue != "" && node.label.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1) {
                 filteredNodeIds.push(node.id);
             }
         });
+
+        document.getElementById('command-line-status').text = 'FIND: ' + filteredNodeIds.length;
 
         if (inputValue != "") {
             network.selectNodes(filteredNodeIds);
@@ -231,16 +233,17 @@ function textInputKeyPressHandler(event) {
             // TODO check if filteredNodeIds are empty or not when inputValue is empty
             // it feels like it matches everything when searching for empty string
             // if fixed, this call shouldn't be needed
+            //
+            // Seems like we need it after all
             network.unselectAll();
         }
 
         network.fit({
-            nodes: filteredNodeIds
-            //,
-//            animation: {
-//                duration: 0.3,
-//                easingFunction: 'easeOutQuad'
-//            }
+            nodes: filteredNodeIds,
+            animation: {
+                duration: 600,
+                easingFunction: 'easeInQuad'
+            }
         });
 
         if (event.key === "Enter") {
