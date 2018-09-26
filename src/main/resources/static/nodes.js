@@ -211,19 +211,87 @@ var confirmDeleteSelectedNode = function() {
     $('.ui.basic.modal').modal('show');
 }
 
+function find(nodesCache, inputValue) {
+    var filteredNodeIds = [];
+
+    nodesCache.forEach(function(node) {
+        if (inputValue != "" && node.label.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1) {
+            filteredNodeIds.push(node.id);
+        }
+    });
+
+    return filteredNodeIds;
+}
+
+function searchInputKeyPressHandler(event) {
+
+    var input = document.getElementById("search_input");
+    var inputValue = input.value;
+
+    var filteredNodeIds = find(nodesCache, inputValue)
+
+    var html = "";
+
+    document.getElementById('command-line-status').text = 'FIND: ' + filteredNodeIds.length;
+
+    if (inputValue != "") {
+        network.selectNodes(filteredNodeIds);
+    } else {
+        // TODO check if filteredNodeIds are empty or not when inputValue is empty
+        // it feels like it matches everything when searching for empty string
+        // if fixed, this call shouldn't be needed
+        //
+        // Seems like we need it after all
+        network.unselectAll();
+    }
+
+    network.fit({
+        nodes: filteredNodeIds,
+        animation: {
+            duration: 600,
+            easingFunction: 'easeInQuad'
+        }
+    });
+
+    // TODO move it away
+    var source   = document.getElementById("feed-search-element").innerHTML;
+    var template = Handlebars.compile(source);
+
+    var nodes = []
+    for (var i = 0; i < network.getSelectedNodes().length; i++) {
+        var nodeId = network.getSelectedNodes()[i]
+        nodes.push(nodesCache.get(nodeId))
+    }
+
+    var context = nodes
+
+    var html = template(context);
+    $('#search_feed_element_container').html(html);
+    //document.getElementById('search_feed_element_container').innerHTML = template(context);
+
+    return event;
+}
+
+
 function textInputKeyPressHandler(event) {
 
     var input = document.getElementById("command-line");
     var inputValue = input.value;
 
     if (state === "FIND") {
-        var filteredNodeIds = [];
+        var filteredNodeIds = find(nodesCache, inputValue)
 
-        nodesCache.forEach(function(node) {
-            if (inputValue != "" && node.label.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1) {
-                filteredNodeIds.push(node.id);
-            }
-        });
+        var html = "";
+        for (var nodeId in filteredNodeIds) {
+            var node = nodesCache.get(filteredNodeId)
+            var context = {
+                    id: node.id,
+                    content: node.content
+                };
+            html += template(context);
+        }
+
+        document.getElementById('search_feed_element_container').innerHTML = html;
 
         document.getElementById('command-line-status').text = 'FIND: ' + filteredNodeIds.length;
 

@@ -6,7 +6,7 @@
 
     <style type="text/css">
         #mynetwork {
-            width: 1680px;
+            width: 1330px;
             height: 920px;
             border: 1px solid lightgray;
             background-color: #222222;
@@ -28,10 +28,13 @@
         }
     </style>
 
+    <script type="text/javascript" src="handlebars-latest.js"></script>
+
     <script type="text/javascript" src="vis.js"></script>
     <link href="vis-network.min.css" rel="stylesheet" type="text/css"/>
 
     <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css"/>
+    <!-- TODO make it offline -->
     <script
             src="https://code.jquery.com/jquery-3.1.1.min.js"
             integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
@@ -40,11 +43,35 @@
 
     <script type="text/javascript" src="nodes.js"></script>
 
+    <!-- TEMPLATES -->
+    <script id="feed-search-element" type="text/x-handlebars-template">
+        {{#each this}}
+        <div class="ui inverted divider"></div>
+        <div class="event">
+            <div class="label" style="color: grey;">
+                {{this.type}}
+            </div>
+            <div class="content" style="color: grey;">
+                {{this.label}}
+            </div>
+        </div>
+        {{/each}}
+    </script>
+    <!-- TEMPLATES END -->
+
 </head>
 
 <body onload="generateGraph()" onkeypress="bodyKeyPressHandler(event)">
     <!-- RIGHT SIDEBAR  -->
-    <div class="ui right wide sidebar inverted vertical menu">
+    <div class="ui right wide sidebar inverted visible vertical menu">
+        <!-- SEARCH INPUT -->
+        <div class="ui inverted fluid icon input" style="margin-top: 10px; margin-right: 5px;">
+            <input type="text" placeholder="Search..." id="search_input" onkeydown="searchInputKeyPressHandler(event)" />
+            <i class="search icon"></i>
+        </div>
+        <!-- SEARCH INPUT END-->
+        <div class="ui inverted divider"></div>
+        <!-- CARD -->
         <div class="ui cards">
             <div id="card" class="card">
                 <div class="content">
@@ -60,13 +87,22 @@
                 </div>
             </div>
         </div>
+        <!-- CARD END -->
+        <div class="ui inverted divider"></div>
+        <!-- FEED -->
+        <div class="ui feed">
+            <!-- EVENT -->
+            <div id="search_feed_element_container"></div>
+            <!-- EVENT END -->
+        </div>
+        <!-- FEED END -->
     </div>
     <!-- RIGHT SIDEBAR END -->
-    <div class="pusher">
+    <div>
         <div id="content" class="ui grid">
             <div id="mynetwork" class="center"></div>
             <div class="center" style="width: 100%;">
-                <div class="ui fluid right labeled input">
+                <div class="ui fluid left labeled input">
                     <input type="text" id="command-line" placeholder="" class="" onkeydown="textInputKeyPressHandler(event)" />
                     <a id="command-line-status" class="ui tag label"></a>
                 </div>
