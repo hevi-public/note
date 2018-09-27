@@ -248,7 +248,7 @@ function searchInputKeyPressHandler(event) {
     network.fit({
         nodes: filteredNodeIds,
         animation: {
-            duration: 600,
+            duration: 500,
             easingFunction: 'easeInQuad'
         }
     });
@@ -377,4 +377,39 @@ function bodyKeyPressHandler(event) {
                 break;
         }
     }
+}
+
+var beforeSearchView;
+
+function focusOnNode(event) {
+    var selectedId = event.target.dataset.id
+
+    network.fit({
+        nodes: [selectedId],
+        animation: {
+            duration: 300,
+            easingFunction: 'easeInQuad'
+        }
+    });
+}
+
+function feed_mouse_enter_handler(event) {
+    if (!beforeSearchView) {
+        beforeSearchView = {
+            position: network.getViewPosition(),
+            scale: network.getScale()
+        }
+    }
+}
+
+function feed_mouse_leave_handler(event) {
+    network.moveTo({
+        position: beforeSearchView.position,
+        scale: beforeSearchView.scale,
+        animation: {
+            duration: 500,
+            easingFunction: 'easeInQuad'
+        }
+    });
+    beforeSearchView = null;
 }

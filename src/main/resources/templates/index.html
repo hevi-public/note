@@ -47,8 +47,8 @@
     <script id="feed-search-element" type="text/x-handlebars-template">
         {{#each this}}
         <div class="ui inverted divider"></div>
-        <div class="event">
-            <div class="label" style="color: grey;">
+        <div class="event" onmouseover="focusOnNode(event)">
+            <div class="label" style="color: grey;" data-id="{{this.id}}">
                 {{this.type}}
             </div>
             <div class="content" style="color: grey;">
@@ -90,7 +90,7 @@
         <!-- CARD END -->
         <div class="ui inverted divider"></div>
         <!-- FEED -->
-        <div class="ui feed">
+        <div class="ui feed" onmouseenter="feed_mouse_enter_handler(event)" onmouseleave="feed_mouse_leave_handler(event)">
             <!-- EVENT -->
             <div id="search_feed_element_container"></div>
             <!-- EVENT END -->
