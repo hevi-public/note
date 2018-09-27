@@ -22,6 +22,8 @@ function generateGraph() {
         }
       }
     };
+
+    document.getElementById('command-line-status').text = 'I think...';
 }
 
 function init(graph) {
@@ -232,8 +234,6 @@ function searchInputKeyPressHandler(event) {
 
     var html = "";
 
-    document.getElementById('command-line-status').text = 'FIND: ' + filteredNodeIds.length;
-
     if (inputValue != "") {
         network.selectNodes(filteredNodeIds);
     } else {
@@ -277,59 +277,6 @@ function textInputKeyPressHandler(event) {
 
     var input = document.getElementById("command-line");
     var inputValue = input.value;
-
-    if (state === "FIND") {
-        var filteredNodeIds = find(nodesCache, inputValue)
-
-        var html = "";
-        for (var nodeId in filteredNodeIds) {
-            var node = nodesCache.get(filteredNodeId)
-            var context = {
-                    id: node.id,
-                    content: node.content
-                };
-            html += template(context);
-        }
-
-        document.getElementById('search_feed_element_container').innerHTML = html;
-
-        document.getElementById('command-line-status').text = 'FIND: ' + filteredNodeIds.length;
-
-        if (inputValue != "") {
-            network.selectNodes(filteredNodeIds);
-        } else {
-            // TODO check if filteredNodeIds are empty or not when inputValue is empty
-            // it feels like it matches everything when searching for empty string
-            // if fixed, this call shouldn't be needed
-            //
-            // Seems like we need it after all
-            network.unselectAll();
-        }
-
-        network.fit({
-            nodes: filteredNodeIds,
-            animation: {
-                duration: 600,
-                easingFunction: 'easeInQuad'
-            }
-        });
-
-        if (event.key === "Enter") {
-            input.value = "";
-        }
-
-        return event;
-    }
-
-    if(!(event instanceof KeyboardEvent) || event.key !== "Enter") {
-        return true;
-    }
-
-    if (inputValue === "") {
-        // handle blank enter case
-        setNextState(input);
-        return false;
-    }
 
     var connectionIds = [];
     for (var i = 0; i < network.getSelection().nodes.length; i++) {
