@@ -278,6 +278,10 @@ function textInputKeyPressHandler(event) {
     var input = document.getElementById("command-line");
     var inputValue = input.value;
 
+    if(!(event instanceof KeyboardEvent) || event.key !== "Enter") {
+        return true;
+    }
+
     var connectionIds = [];
     for (var i = 0; i < network.getSelection().nodes.length; i++) {
         connectionIds.push(network.getSelection().nodes[i]);
