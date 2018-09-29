@@ -6,6 +6,7 @@ import lombok.Value;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Value
 @AllArgsConstructor
@@ -17,6 +18,7 @@ public class NodeResponse {
     private String type;
     private int group;
     private int value;
+    private List<Integer> tags;
 
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -45,5 +47,6 @@ public class NodeResponse {
         this.type = node.getType().name();
         this.group = node.getType().ordinal();
         this.value = value;
+        this.tags = node.getTags();
     }
 }

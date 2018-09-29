@@ -48,15 +48,14 @@ public class NodeController {
         }
 
         List<Integer> peerIds;
-        if (isNotBlank(requestBody.getPeerIds()) && requestBody.getPeerIds().contains(",")) {
-            peerIds = Arrays.asList(requestBody.getPeerIds().split(",")).stream().map(id -> Integer.parseInt(id)).collect(Collectors.toList());
-        } else if (isNotBlank(requestBody.getPeerIds()) && !requestBody.getPeerIds().contains(",")) {
-            peerIds = Arrays.asList(Integer.parseInt(requestBody.getPeerIds()));
+        if (isNotBlank(requestBody.getPeerId())) {
+            peerIds = Arrays.asList(Integer.parseInt(requestBody.getPeerId()));
         } else {
             peerIds = new ArrayList<>();
         }
 
-        return new NodeResponse(nodeService.addNote(requestBody.getContent(), peerIds));
+        Note addedNode = nodeService.addNote(requestBody.getContent(), peerIds);
+        return new NodeResponse(addedNode);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)

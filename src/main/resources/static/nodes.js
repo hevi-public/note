@@ -286,21 +286,22 @@ function textInputKeyPressHandler(event) {
         return true;
     }
 
-    var connectionIds = [];
-    for (var i = 0; i < network.getSelection().nodes.length; i++) {
-        connectionIds.push(network.getSelection().nodes[i]);
-    }
-
     var content = {
-        peerIds: connectionIds.join(),
+        peerId: network.getSelection().nodes[0],
         content: inputValue
     };
 
     // add node
     sendRequest('POST', '/node', content, isJson = true, function(xhr) {
+        var newNode = JSON.parse(xhr.response)
         updateGraph({
-            nodes: [JSON.parse(xhr.response)]
+            nodes: [newNode]
         }, false);
+        updateGraph({
+            edges: [{from:newNode.tags[0], to: newNode.id}]
+        }, false);
+        // selectLastAddedNode
+        network.selectNodes([newNode.id], true)
     });
     input.value = "";
 
