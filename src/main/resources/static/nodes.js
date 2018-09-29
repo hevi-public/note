@@ -210,7 +210,11 @@ $( document ).ready(function() {
 });
 
 var confirmDeleteSelectedNode = function() {
-    $('.ui.basic.modal').modal('show');
+    if (network.getSelectedNodes().length > 0) {
+        $('.ui.basic.modal').modal('show');
+    } else {
+        // TODO provide feedback
+    }
 }
 
 function find(nodesCache, inputValue) {
